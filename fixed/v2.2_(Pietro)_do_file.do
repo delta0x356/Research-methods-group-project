@@ -15,7 +15,7 @@ mata: mata mlib index
 * STEP 1: PREPARE THE TREATMENT FILE
 *******************************************************
 * Import SEC pilot treatment-control assignment file
-import delimited "/Users/delta/Documents/GitHub/Research-methods-group-project/fixed/Treatmentcontrollist.csv", delimiter(";") clear
+import delimited "Treatmentcontrollist.csv", delimiter(";") clear
 rename *, lower
 
 * Create mutually exclusive pilot group indicators and control indicator
@@ -31,7 +31,7 @@ save "treatment_data.dta", replace
 * STEP 2: LOAD WRDS DATA AND MERGE
 *******************************************************
 * Load daily CRSP/WRDS panel dataset and merge with treatment assignment
-use "/Users/delta/Documents/GitHub/Research-methods-group-project/fixed/dataset.dta", clear
+use "dataset.dta", clear
 rename *, lower
 merge m:1 permno using "treatment_data.dta"
 
