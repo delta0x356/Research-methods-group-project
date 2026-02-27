@@ -8,11 +8,11 @@ if "`c(do_file)'" != "" {
     if "`_dir'" != "" & "`_dir'" != "`c(do_file)'" cd "`_dir'"
 }
 * Verify data files are accessible - exit with clear message if not found
-capture confirm file "Treatmentcontrollist.csv"
+capture confirm file "data/Treatmentcontrollist.csv"
 if _rc {
-    di as error "Data files not found in: `c(pwd)'"
+    di as error "Data files not found in: `c(pwd)'/data/"
     di as error "Either: (1) Save this file first (Cmd+S) then re-run, or"
-    di as error "        (2) Type in Stata command window: cd [path to fixed folder]"
+    di as error "        (2) Type in Stata command window: cd [project root folder]"
     exit 601
 }
 
@@ -34,7 +34,7 @@ mata: mata mlib index
 * STEP 1: PREPARE THE TREATMENT FILE
 *******************************************************
 * Import SEC pilot treatment-control assignment file
-import delimited "Treatmentcontrollist.csv", delimiter(",") clear
+import delimited "data/Treatmentcontrollist.csv", delimiter(",") clear
 rename *, lower
 
 * Create mutually exclusive pilot group indicators and control indicator
@@ -51,7 +51,7 @@ save `treatment_data', replace
 * STEP 2: LOAD WRDS DATA AND MERGE
 *******************************************************
 * Load daily CRSP/WRDS panel dataset and merge with treatment assignment
-use "dataset.dta", clear
+use "data/dataset.dta", clear
 rename *, lower
 merge m:1 permno using `treatment_data'
 

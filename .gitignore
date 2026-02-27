@@ -1,14 +1,15 @@
+# Input data and large binary files (not tracked)
+data/
 *.dta
-Treatmentcontrollist.csv
+
+# Generated outputs
+results/
 
 # Stata editor swap files
 *.stswp
 
-# Generated output files
-fixed/results/
-fixed/*.csv
-fixed/*.xlsx
-fixed/*.png
+# Log files
+*.log
 
 # macOS
 .DS_Store
