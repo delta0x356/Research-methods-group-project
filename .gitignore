@@ -1,2 +1,14 @@
 *.dta
 Treatmentcontrollist.csv
+
+# Stata editor swap files
+*.stswp
+
+# Generated output files
+fixed/results/
+fixed/*.csv
+fixed/*.xlsx
+fixed/*.png
+
+# macOS
+.DS_Store
