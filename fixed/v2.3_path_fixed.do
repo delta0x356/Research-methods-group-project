@@ -1,6 +1,10 @@
 clear all
 set more off
 
+* Automatically set working directory to the folder containing this do file
+local dofile_path "`c(do_file)'"
+local dofile_dir = ustrregexra("`dofile_path'", "[/\\][^/\\]*$", "")
+cd "`dofile_dir'"
 
 *******************************************************
 * STEP 0: INSTALL REQUIRED PACKAGES
@@ -16,7 +20,7 @@ mata: mata mlib index
 * STEP 1: PREPARE THE TREATMENT FILE
 *******************************************************
 * Import SEC pilot treatment-control assignment file
-import delimited "Treatmentcontrollist.csv", delimiter(";") clear
+import delimited "Treatmentcontrollist.csv", delimiter(",") clear
 rename *, lower
 
 * Create mutually exclusive pilot group indicators and control indicator

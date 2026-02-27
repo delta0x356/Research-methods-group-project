@@ -20,7 +20,7 @@ mata: mata mlib index
 * STEP 1: PREPARE THE TREATMENT FILE
 *******************************************************
 * Import SEC pilot treatment-control assignment file
-import delimited "Treatmentcontrollist.csv", delimiter(";") clear
+import delimited "Treatmentcontrollist.csv", delimiter(",") clear
 rename *, lower
 
 * Create mutually exclusive pilot group indicators and control indicator
