@@ -2,9 +2,19 @@ clear all
 set more off
 
 * Automatically set working directory to the folder containing this do file
-local dofile_path "`c(do_file)'"
-local dofile_dir = ustrregexra("`dofile_path'", "[/\\][^/\\]*$", "")
-cd "`dofile_dir'"
+* IMPORTANT: Save the file first (Cmd+S) before clicking Execute
+if "`c(do_file)'" != "" {
+    local _dir = ustrregexra("`c(do_file)'", "[/\\][^/\\]*$", "")
+    if "`_dir'" != "" & "`_dir'" != "`c(do_file)'" cd "`_dir'"
+}
+* Verify data files are accessible - exit with clear message if not found
+capture confirm file "Treatmentcontrollist.csv"
+if _rc {
+    di as error "Data files not found in: `c(pwd)'"
+    di as error "Either: (1) Save this file first (Cmd+S) then re-run, or"
+    di as error "        (2) Type in Stata command window: cd [path to fixed folder]"
+    exit 601
+}
 
 *******************************************************
 * STEP 0: INSTALL REQUIRED PACKAGES
