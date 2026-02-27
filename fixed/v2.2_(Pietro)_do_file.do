@@ -1,6 +1,11 @@
 clear all
 set more off
 
+* Automatically set working directory to the folder containing this do file
+local dofile_path "`c(current_do_file)'"
+local dofile_dir = ustrregexra("`dofile_path'", "[/\\][^/\\]*$", "")
+cd "`dofile_dir'"
+
 *******************************************************
 * STEP 0: INSTALL REQUIRED PACKAGES
 *******************************************************
