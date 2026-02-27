@@ -160,36 +160,59 @@ replace group_id = 3 if g3 == 1
 *******************************************************
 preserve
 
-* Restrict to the standard pre-treatment window (Mar 1 – Aug 31, 2016)
 keep if date >= td(01mar2016) & date <= td(31aug2016)
 
-* Label variables for clean table output
-label variable ln_turnover   "Log Turnover"
-label variable ln_volume     "Log Volume"
-label variable turnover      "Turnover"
-label variable Inv_Price     "Inverse Price"
-label variable spread        "Quoted Spread ($)"
+label variable ln_turnover    "Log Turnover"
+label variable ln_volume      "Log Volume"
+label variable turnover       "Turnover"
+label variable Inv_Price      "Inverse Price"
+label variable spread         "Quoted Spread ($)"
 label variable firm_pre_spread "Avg Pre-Treatment Spread ($)"
-label variable SmallSpread   "Small Spread (Spread < $0.05)"
+label variable SmallSpread    "Small Spread (< $0.05)"
 
 estpost summarize ln_turnover ln_volume turnover Inv_Price spread firm_pre_spread SmallSpread if control == 1
 est store tbl_control
-
 estpost summarize ln_turnover ln_volume turnover Inv_Price spread firm_pre_spread SmallSpread if g1 == 1
 est store tbl_g1
-
 estpost summarize ln_turnover ln_volume turnover Inv_Price spread firm_pre_spread SmallSpread if g2 == 1
 est store tbl_g2
-
 estpost summarize ln_turnover ln_volume turnover Inv_Price spread firm_pre_spread SmallSpread if g3 == 1
 est store tbl_g3
 
-esttab tbl_control tbl_g1 tbl_g2 tbl_g3 ///
-    using "results/Table1_SummaryStatistics.csv", ///
-    cells("count(fmt(%9.0f)) mean(fmt(%9.4f)) sd(fmt(%9.4f)) min(fmt(%9.4f)) max(fmt(%9.4f))") ///
-    mtitles("Control" "G1 ($0.05 tick)" "G2 ($0.10 tick)" "G3 ($0.20 tick)") ///
-    title("Table 1: Summary Statistics — Pre-Treatment Period (March–August 2016)") ///
-    label replace
+* Build combined data matrix: 7 variables × 20 stats (N Mean SD Min Max × 4 groups)
+estimates restore tbl_control
+matrix T = e(count)', e(mean)', e(sd)', e(min)', e(max)'
+estimates restore tbl_g1
+matrix T = T, e(count)', e(mean)', e(sd)', e(min)', e(max)'
+estimates restore tbl_g2
+matrix T = T, e(count)', e(mean)', e(sd)', e(min)', e(max)'
+estimates restore tbl_g3
+matrix T = T, e(count)', e(mean)', e(sd)', e(min)', e(max)'
+
+* Write directly to Excel
+putexcel set "results/Table1_SummaryStatistics.xlsx", replace sheet("Summary Statistics")
+
+putexcel A1 = "Table 1: Summary Statistics — Pre-Treatment Period (March–August 2016)"
+putexcel A3 = "Variable"
+
+* Group labels (row 2)
+putexcel B2 = "Control"          G2 = "G1 ($0.05 tick)" ///
+         L2 = "G2 ($0.10 tick)"  Q2 = "G3 ($0.20 tick)"
+
+* Column sub-headers (row 3)
+putexcel B3 = "N"  C3 = "Mean"  D3 = "Std. Dev."  E3 = "Min"  F3 = "Max" ///
+         G3 = "N"  H3 = "Mean"  I3 = "Std. Dev."  J3 = "Min"  K3 = "Max" ///
+         L3 = "N"  M3 = "Mean"  N3 = "Std. Dev."  O3 = "Min"  P3 = "Max" ///
+         Q3 = "N"  R3 = "Mean"  S3 = "Std. Dev."  T3 = "Min"  U3 = "Max"
+
+* Variable names (column A, rows 4–10)
+putexcel A4  = "Log Turnover"               A5  = "Log Volume" ///
+         A6  = "Turnover"                   A7  = "Inverse Price" ///
+         A8  = "Quoted Spread ($)"          A9  = "Avg Pre-Treatment Spread ($)" ///
+         A10 = "Small Spread (< $0.05)"
+
+* Data (7 rows × 20 cols) starting at B4
+putexcel B4 = matrix(T), nformat(number_d4)
 
 restore
 
@@ -224,30 +247,115 @@ reghdfe ln_turnover ///
 estimates store H2_Model
 
 *******************************************************
-* STEP 9: EXPORT REGRESSION RESULTS (CSV)
+* STEP 9: EXPORT REGRESSION RESULTS TO EXCEL
 *******************************************************
-esttab H1_Model H2_Model using "results/Regression_Results.csv", ///
-    keep(*treatmentperiod* *postpilot*) ///
-    star(* 0.10 ** 0.05 *** 0.01) ///
-    b(%9.4f) se(%9.4f) ///
-    mtitles("H1: Average Effects" "H2: Heterogeneous Effects") ///
-    title("Table 2: Impact of Tick Size on Trading Volume (Dependent Variable: Log Turnover)") ///
-    replace
+putexcel set "results/Regression_Results.xlsx", replace sheet("Regression Results")
 
-*******************************************************
-* STEP 10: CONVERT TABLES TO EXCEL
-*******************************************************
-quietly {
-    tempfile main_data
-    save `main_data', replace
+* Title and column headers
+putexcel A1 = "Table 2: Impact of Tick Size on Trading Volume (Dep. Var.: Log Turnover)"
+putexcel A3 = "Variable"
+putexcel B3 = "H1: Average Effects"
+putexcel E3 = "H2: Heterogeneous Effects"
+putexcel B4 = "Coef."  C4 = "(SE)"
+putexcel E4 = "Coef."  F4 = "(SE)"
 
-    import delimited "results/Table1_SummaryStatistics.csv", clear encoding(UTF-8)
-    export excel using "results/Table1_SummaryStatistics.xlsx", firstrow(variables) replace
+* Row labels — main effects (rows 5–10)
+putexcel A5  = "G1 × Treatment Period"
+putexcel A6  = "G2 × Treatment Period"
+putexcel A7  = "G3 × Treatment Period"
+putexcel A8  = "G1 × Post-Pilot"
+putexcel A9  = "G2 × Post-Pilot"
+putexcel A10 = "G3 × Post-Pilot"
 
-    import delimited "results/Regression_Results.csv", clear encoding(UTF-8)
-    export excel using "results/Regression_Results.xlsx", firstrow(variables) replace
+* Row labels — triple interactions, H2 only (rows 12–17)
+putexcel A12 = "G1 × Treatment × SmallSpread"
+putexcel A13 = "G2 × Treatment × SmallSpread"
+putexcel A14 = "G3 × Treatment × SmallSpread"
+putexcel A15 = "G1 × Post × SmallSpread"
+putexcel A16 = "G2 × Post × SmallSpread"
+putexcel A17 = "G3 × Post × SmallSpread"
 
-    use `main_data', clear
+* Bottom rows — model diagnostics
+putexcel A19 = "Observations"
+putexcel A20 = "Adj. Within R²"
+putexcel A21 = "Firm FE"
+putexcel A22 = "Date FE"
+putexcel A23 = "Clustered SE"
+putexcel C21 = "Yes"   F21 = "Yes"
+putexcel C22 = "Yes"   F22 = "Yes"
+putexcel C23 = "Firm"  F23 = "Firm"
+putexcel A25 = "Notes: *** p<0.01, ** p<0.05, * p<0.10. Standard errors clustered at firm level in parentheses."
+
+* Variable lists and matching row numbers (shared across both models)
+local vars_main   "c.g1#c.treatmentperiod c.g2#c.treatmentperiod c.g3#c.treatmentperiod c.g1#c.postpilot c.g2#c.postpilot c.g3#c.postpilot"
+local rows_main   "5 6 7 8 9 10"
+local vars_triple "c.g1#c.treatmentperiod#c.SmallSpread c.g2#c.treatmentperiod#c.SmallSpread c.g3#c.treatmentperiod#c.SmallSpread c.g1#c.postpilot#c.SmallSpread c.g2#c.postpilot#c.SmallSpread c.g3#c.postpilot#c.SmallSpread"
+local rows_triple "12 13 14 15 16 17"
+
+* --- H1 Model ---
+estimates restore H1_Model
+putexcel B19 = e(N),          nformat("#,##0")
+putexcel B20 = e(r2_within),  nformat(number_d4)
+
+forvalues i = 1/6 {
+    local v  : word `i' of `vars_main'
+    local rw : word `i' of `rows_main'
+    local b  = _b[`v']
+    local se = _se[`v']
+    local t  = abs(`b' / `se')
+    if `t' > 2.576      local stars "***"
+    else if `t' > 1.960 local stars "**"
+    else if `t' > 1.645 local stars "*"
+    else                local stars ""
+    local bfmt : display %9.4f `b'
+    local bfmt = strtrim("`bfmt'")
+    local sefmt : display %9.4f `se'
+    local sefmt = strtrim("`sefmt'")
+    putexcel B`rw' = "`bfmt'`stars'"
+    putexcel C`rw' = "(`sefmt')"
+}
+
+* --- H2 Model ---
+estimates restore H2_Model
+putexcel E19 = e(N),          nformat("#,##0")
+putexcel E20 = e(r2_within),  nformat(number_d4)
+
+* Main effects
+forvalues i = 1/6 {
+    local v  : word `i' of `vars_main'
+    local rw : word `i' of `rows_main'
+    local b  = _b[`v']
+    local se = _se[`v']
+    local t  = abs(`b' / `se')
+    if `t' > 2.576      local stars "***"
+    else if `t' > 1.960 local stars "**"
+    else if `t' > 1.645 local stars "*"
+    else                local stars ""
+    local bfmt : display %9.4f `b'
+    local bfmt = strtrim("`bfmt'")
+    local sefmt : display %9.4f `se'
+    local sefmt = strtrim("`sefmt'")
+    putexcel E`rw' = "`bfmt'`stars'"
+    putexcel F`rw' = "(`sefmt')"
+}
+
+* Triple interactions
+forvalues i = 1/6 {
+    local v  : word `i' of `vars_triple'
+    local rw : word `i' of `rows_triple'
+    local b  = _b[`v']
+    local se = _se[`v']
+    local t  = abs(`b' / `se')
+    if `t' > 2.576      local stars "***"
+    else if `t' > 1.960 local stars "**"
+    else if `t' > 1.645 local stars "*"
+    else                local stars ""
+    local bfmt : display %9.4f `b'
+    local bfmt = strtrim("`bfmt'")
+    local sefmt : display %9.4f `se'
+    local sefmt = strtrim("`sefmt'")
+    putexcel E`rw' = "`bfmt'`stars'"
+    putexcel F`rw' = "(`sefmt')"
 }
 
 *******************************************************
@@ -449,9 +557,9 @@ di as text " "
 di as text "========================================================"
 di as text "  All results saved to: `c(pwd)'/results/"
 di as text "--------------------------------------------------------"
-di as text "  TABLES (CSV + Excel):"
-di as text "    Table1_SummaryStatistics.csv / .xlsx"
-di as text "    Regression_Results.csv / .xlsx"
+di as text "  TABLES (Excel):"
+di as text "    Table1_SummaryStatistics.xlsx"
+di as text "    Regression_Results.xlsx"
 di as text "--------------------------------------------------------"
 di as text "  FIGURES (PNG, 1400x900):"
 di as text "    Figure1_Volume_Trends.png"
