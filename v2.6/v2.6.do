@@ -4,8 +4,7 @@ set more off
 *******************************************************
 * SET WORKING DIRECTORY (ROBUST AUTOMATION)
 *******************************************************
-* This logic automatically sets the working directory to the folder
-* where you saved this .do file.
+* Sets the working directory to the folder containing this .do file.
 if "`c(do_file)'" != "" {
     local _dir = ustrregexra("`c(do_file)'", "[/\\][^/\\]*$", "")
     if "`_dir'" != "" & "`_dir'" != "`c(do_file)'" cd "`_dir'"
@@ -159,20 +158,19 @@ gen SmallSpread = (firm_pre_spread < 0.05)
 *******************************************************
 * STEP 6: TABLE 1 — SUMMARY STATISTICS (PRE-TREATMENT)
 *******************************************************
-* Per task instructions:
-*   - Condition on treatment group (Control / G1 / G2 / G3), NOT on spread
-*   - Include only variables used in the regression models
+* Computed separately by treatment group (Control / G1 / G2 / G3).
+* Only variables entering the regression models are included.
 *
-* Variables included and their role:
+* Variables and their role:
 *   ln_turnover     : main dependent variable
 *   ln_volume       : dependent variable in robustness regressions
 *   Inv_Price       : regression control (inverse price)
-*   abs_ret         : regression control (one-day lag enters regressions as L_abs_ret)
+*   abs_ret         : regression control (one-day lag enters as L_abs_ret)
 *   spread          : used to construct SmallSpread; also descriptive
 *   firm_pre_spread : used to construct SmallSpread
 *   SmallSpread     : heterogeneity indicator in H2 regressions
 *
-* Raw turnover (unlogged) is excluded: only ln_turnover enters regressions.
+* Raw turnover (unlogged) is excluded; only ln_turnover enters regressions.
 
 preserve
 keep if date >= td(01mar2016) & date <= td(31aug2016)
@@ -454,12 +452,10 @@ estimates store H2_Turnover
 *======================================================
 * STEP 11: ROBUSTNESS — H1 WITH LOG VOLUME (ln_volume)
 *======================================================
-* The task frames the research question around trading volume.
-* Using ln_volume (log of raw share count) as the dependent variable
-* is a direct test of the volume hypothesis. Using ln_turnover
-* (log of volume / shares outstanding) controls for firm size and
-* is the approach in Albuquerque et al. (2020). Both are reported;
-* convergence of results across both specifications strengthens inference.
+* ln_volume (log of raw share count) is a direct measure of the volume
+* hypothesis. ln_turnover (log of volume / shares outstanding) controls
+* for firm size, following Albuquerque et al. (2020). Both specifications
+* are reported; convergence across the two strengthens inference.
 
 reghdfe ln_volume ///
     c.g1#c.treatmentperiod c.g2#c.treatmentperiod c.g3#c.treatmentperiod ///
