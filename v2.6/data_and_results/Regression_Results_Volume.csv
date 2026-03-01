@@ -1,0 +1,45 @@
+="Impact of Tick Size on Log Volume (Robustness Check)"
+
+="",="(1)",="(2)"
+="",="ln_volume",="ln_volume"
+
+="c.g1#c.treatmentperiod",="-0.1097***",="0.0440"
+="",="(0.0371)",="(0.0841)"
+
+="c.g2#c.treatmentperiod",="-0.0561",="0.1089"
+="",="(0.0423)",="(0.1059)"
+
+="c.g3#c.treatmentperiod",="-0.0932**",="0.0691"
+="",="(0.0410)",="(0.0956)"
+
+="c.g1#c.postpilot",="-0.0703",="0.1045"
+="",="(0.0531)",="(0.1196)"
+
+="c.g2#c.postpilot",="-0.0884",="0.1328"
+="",="(0.0579)",="(0.1329)"
+
+="c.g3#c.postpilot",="0.0144",="0.2812**"
+="",="(0.0550)",="(0.1331)"
+
+="c.g1#c.treatmentperiod#c.SmallSpread",="",="-0.2068**"
+="",="",="(0.0869)"
+
+="c.g2#c.treatmentperiod#c.SmallSpread",="",="-0.2192**"
+="",="",="(0.1095)"
+
+="c.g3#c.treatmentperiod#c.SmallSpread",="",="-0.2163**"
+="",="",="(0.0998)"
+
+="c.g1#c.postpilot#c.SmallSpread",="",="-0.2355*"
+="",="",="(0.1250)"
+
+="c.g2#c.postpilot#c.SmallSpread",="",="-0.2948**"
+="",="",="(0.1400)"
+
+="c.g3#c.postpilot#c.SmallSpread",="",="-0.3563***"
+="",="",="(0.1378)"
+
+="N",="1391036",="1391036"
+
+="Standard errors in parentheses"
+="* p<0.10, ** p<0.05, *** p<0.01"

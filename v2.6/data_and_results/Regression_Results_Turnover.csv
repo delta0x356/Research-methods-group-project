@@ -1,0 +1,45 @@
+="Impact of Tick Size on Log Turnover (Main Results)"
+
+="",="(1)",="(2)"
+="",="ln_turnover",="ln_turnover"
+
+="c.g1#c.treatmentperiod",="-0.0881***",="0.0401"
+="",="(0.0333)",="(0.0768)"
+
+="c.g2#c.treatmentperiod",="-0.0578",="0.0733"
+="",="(0.0364)",="(0.0896)"
+
+="c.g3#c.treatmentperiod",="-0.0959**",="0.0475"
+="",="(0.0383)",="(0.0941)"
+
+="c.g1#c.postpilot",="-0.0480",="0.0525"
+="",="(0.0462)",="(0.1087)"
+
+="c.g2#c.postpilot",="-0.0797",="0.0771"
+="",="(0.0485)",="(0.1111)"
+
+="c.g3#c.postpilot",="0.0200",="0.2471**"
+="",="(0.0488)",="(0.1212)"
+
+="c.g1#c.treatmentperiod#c.SmallSpread",="",="-0.1727**"
+="",="",="(0.0791)"
+
+="c.g2#c.treatmentperiod#c.SmallSpread",="",="-0.1743*"
+="",="",="(0.0925)"
+
+="c.g3#c.treatmentperiod#c.SmallSpread",="",="-0.1912*"
+="",="",="(0.0977)"
+
+="c.g1#c.postpilot#c.SmallSpread",="",="-0.1351"
+="",="",="(0.1128)"
+
+="c.g2#c.postpilot#c.SmallSpread",="",="-0.2088*"
+="",="",="(0.1167)"
+
+="c.g3#c.postpilot#c.SmallSpread",="",="-0.3031**"
+="",="",="(0.1251)"
+
+="N",="1391036",="1391036"
+
+="Standard errors in parentheses"
+="* p<0.10, ** p<0.05, *** p<0.01"
