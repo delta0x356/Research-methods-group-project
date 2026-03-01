@@ -1,0 +1,10 @@
+Step,Test,Comparison,Statistic,Value,Interpretation
+8A,Parallel Trends F-test,G1 vs Control,F-statistic (df=3),F=0.7255  p=0.5367,"p>0.10 supports parallel trends"
+8A,Parallel Trends F-test,G2 vs Control,F-statistic (df=3),F=0.4206  p=0.7382,"p>0.10 supports parallel trends"
+8A,Parallel Trends F-test,G3 vs Control,F-statistic (df=3),F=0.8367  p=0.4737,"p>0.10 supports parallel trends"
+8C,Multicollinearity,G1 x Treatment  vs  G1 x Treatment x SmallSpread,Pearson r,0.8451,"Concern if |r|>0.90"
+8C,Multicollinearity,G2 x Treatment  vs  G2 x Treatment x SmallSpread,Pearson r,0.8502,"Concern if |r|>0.90"
+8C,Multicollinearity,G3 x Treatment  vs  G3 x Treatment x SmallSpread,Pearson r,0.8517,"Concern if |r|>0.90"
+8C,Multicollinearity,G1 x Post-Pilot  vs  G1 x Post-Pilot x SmallSpread,Pearson r,0.8552,"Concern if |r|>0.90"
+8C,Multicollinearity,G2 x Post-Pilot  vs  G2 x Post-Pilot x SmallSpread,Pearson r,0.8588,"Concern if |r|>0.90"
+8C,Multicollinearity,G3 x Post-Pilot  vs  G3 x Post-Pilot x SmallSpread,Pearson r,0.8588,"Concern if |r|>0.90"
