@@ -14,10 +14,16 @@ local outdir "data_and_results"
 
 * Check required input files exist
 capture confirm file "data_and_results/Treatmentcontrollist.csv"
-if _rc { di as error "Missing: Treatmentcontrollist.csv" & exit 601 }
+if _rc {
+    di as error "Missing: Treatmentcontrollist.csv"
+    exit 601
+}
 
 capture confirm file "data_and_results/dataset.dta"
-if _rc { di as error "Missing: dataset.dta" & exit 601 }
+if _rc {
+    di as error "Missing: dataset.dta"
+    exit 601
+}
 
 *******************************************************
 * STEP 0: INSTALL REQUIRED PACKAGES
